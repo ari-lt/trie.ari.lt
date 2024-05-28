@@ -44,7 +44,7 @@ int main(const int argc, const char *const argv[]) {
     idx = 0;
 
     while ((c = getchar()) != EOF) {
-        buf[idx++] = c == '\n' ? ' ' : (uint8_t)c;
+        buf[idx++] = c == '\n' || c == '\r' ? ' ' : (uint8_t)c;
 
         if (idx >= (BUF_SIZE - 2) || c == '.' || c == '?' || c == '!') {
             buf[idx] = '\0';
