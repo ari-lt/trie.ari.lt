@@ -27,7 +27,7 @@ app.config["USE_SESSION_FOR_NEXT"] = True
 
 MIN_LENGTH_MAX: t.Final[int] = 256
 COUNT_MAX: t.Final[int] = 128
-MAX_TEXT: t.Final[int] = 2**15  # 32 KB
+MAX_TEXT: t.Final[int] = 2**14  # 16 KB
 MAX_FILESIZE: t.Final[int] = 2**32  # 4 GB
 
 limit: Limiter = Limiter(
