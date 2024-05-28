@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="{% block lang %}en{% endblock %}">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <title>Ari::web -> Trie</title>
+
+        <meta name="description" content="Generate unique text with Libtrie!" />
+        <meta
+            name="robots"
+            content="follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large"
+        />
+        <meta name="license" content="Unlicense">
+
+        <meta
+            name="keywords"
+            content="ari-web, markov chain, trie, ai, open source, foss"
+        />
+
+        <meta property="og:type" content="website" />
+
+        <meta name="color-scheme" content="dark" />
+        <meta name="theme-color" content="#121212" />
+        <style>*{background-color:#121212;color:whitesmoke}</style>
+
+        {% set styles = url_for("static", filename="css/base.css") %}
+
+        <link
+            href="{{ styles }}"
+            rel="preload"
+            referrerpolicy="no-referrer"
+            type="text/css"
+            as="style"
+            onload="this.onload=null;this.rel='stylesheet'"
+        />
+
+        <noscript>
+        <link
+            href="{{ styles }}"
+            rel="stylesheet"
+            referrerpolicy="no-referrer"
+            type="text/css"
+        />
+        </noscript>
+
+        {% block head %}{% endblock %}
+    </head>
+
+    <body>
+        {% with messages = get_flashed_messages(with_categories=True) %}
+            {% if messages %}
+            <details open>
+            <summary>messages from the server</summary>
+            {% for category, message in messages %}
+                <div data-category="{{ category }}">{{ message | escape }}</div>
+            {% endfor %}
+            </details>
+            {% endif %}
+        {% endwith %}
+
+        {% block body %}{% endblock %}
+    </body>
+</html>

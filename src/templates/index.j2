@@ -1,0 +1,59 @@
+{% extends "base.j2" %}
+
+{% block body %}
+<h1>Markov chain</h1>
+
+<p>
+    Who needs AI when you have a recursive tree structure?? Exactly (I'm joking).
+    I made this app for fun, to see how it'd go - a public markov chain using <a href="https://ari.lt/gh/libtrie">Libtrie</a>
+    and if you want the source code of this website - <a href="/git">see /git</a>.
+</p>
+
+<h2>Limits</h2>
+
+<ul>
+    <li>Max minimum length: {{ minlen }}</li>
+    <li>Max sentence count: {{ sentcnt }} sentences</li>
+    <li>Max input text: {{ maxtext }} characters</li>
+    <li>Max filesize: {{ filesize }} bytes</li>
+    <li>Can upload text every 3 hours.</li>
+</ul>
+
+<h2>How it works</h2>
+
+<ul>
+    <li>People submit public-domain data to add to the trie model.</li>
+    <li>The server updates the model, limits the user for 3 hours.</li>
+    <li>
+        People can go to any path on /gen/ to get public-domain generated text. Optionally passing in the following GET parameters:
+
+        <ul>
+            <li>count: The count of sentences to generate.</li>
+            <li>min: Minimum sentence length.</li>
+        </ul>
+
+        {% set n = range(100000000, 999999999) | random %}
+        For example: <a href="/gen/testing-{{ n }}?count=8&min=128">Seed testing-{{ n }}: 8 sentences, 128 minimum characters.</a>
+        If you don't set any parameters it'll pick a <a href="/gen">unique seed.</a>
+    </li>
+</ul>
+
+<h2>Upload</h2>
+
+<form method="POST">
+    <textarea placeholder="Text..." id="text" maxlength="{{ maxtext }}" name="text" required style="width:100%"></textarea>
+
+    <br />
+    <label for="license">By submitting this text I know that it isn't illegal, I know that it doesn't infringe on copyright, and it is a public domain resouce:</label>
+    <input type="checkbox" id="license" name="license" required />
+
+    <br />
+    <button type="submit">Send</button>
+</form>
+
+<hr />
+
+<p>
+    Created by Ari Archer &lt;<a href="mailto:ari@ari.lt">ari@ari.lt</a>&gt; and licensed under the <a href="https://unlicense.org/">Unlicense</a>
+</p>
+{% endblock %}
