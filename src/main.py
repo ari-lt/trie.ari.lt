@@ -11,9 +11,19 @@ from warnings import filterwarnings as filter_warnings
 import flask
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
+from werkzeug.middleware.proxy_fix import ProxyFix
 from werkzeug.wrappers import Response
 
 app: flask.Flask = flask.Flask(__name__)
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1)  # type: ignore
+
+app.config["PREFERRED_URL_SCHEME"] = "https"
+app.config["SECRET_KEY"] = os.urandom(1024 * 16)
+
+app.config["SESSION_COOKIE_SAMESITE"] = "strict"
+app.config["SESSION_COOKIE_SECURE"] = True
+app.config["SESSION_COOKIE_HTTPONLY"] = True
+app.config["USE_SESSION_FOR_NEXT"] = True
 
 MIN_LENGTH_MAX: t.Final[int] = 256
 COUNT_MAX: t.Final[int] = 128
