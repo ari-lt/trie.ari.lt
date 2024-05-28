@@ -122,7 +122,9 @@ def git() -> Response:
 def gen(seed: t.Optional[str] = None) -> t.Any:
     if not seed:
         seed = (
-            urlsafe_b64encode(os.urandom(33)).decode("ascii") + "_" + str(time.time())
+            urlsafe_b64encode(os.urandom(33)).decode("ascii")
+            + "_"
+            + str(round(time.time()))
         )
 
     m: int = int(flask.request.args.get("min", 16))
