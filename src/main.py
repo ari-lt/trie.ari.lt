@@ -4,8 +4,8 @@
 
 import os
 import subprocess as sp
-import time
 import typing as t
+from base64 import urlsafe_b64encode
 from warnings import filterwarnings as filter_warnings
 
 import flask
@@ -112,7 +112,7 @@ def git() -> Response:
 @app.get("/gen/")
 def gen(seed: t.Optional[str] = None) -> t.Any:
     if not seed:
-        seed = str(time.time() * 128)
+        seed = urlsafe_b64encode(os.urandom(33)).decode("ascii")
 
     m: int = int(flask.request.args.get("min", 16))
     c: int = int(flask.request.args.get("count", 8))
