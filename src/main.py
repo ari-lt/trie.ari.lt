@@ -67,28 +67,36 @@ def update():
     if os.path.getsize("model.bin") >= MAX_FILESIZE:
         flask.abort(413)
 
-    if "text" not in flask.request.form or len(flask.request.form["text"]) > MAX_TEXT:
+    if "text" not in flask.request.form:
+        flask.abort(400)
+
+    text: str = flask.request.form["text"][:MAX_TEXT].strip()
+
+    if not text:
         flask.abort(400)
 
     process: sp.Popen[bytes] = sp.Popen(
         ("trie-update", "model.bin"), stdout=sp.PIPE, stderr=sp.PIPE, stdin=sp.PIPE
     )
-    stdout, stderr = process.communicate(
-        input=flask.request.form["text"].encode("utf-8", errors="replace")
-    )
 
     os.remove("model.lock")
+
+    stdout, stderr = process.communicate(input=text.encode("utf-8", errors="ignore"))
 
     return flask.Response(
         f"""Done. Exit code: {process.wait()}
 
 Stdout:
 
-{stdout.decode("ascii")}
+{stdout.decode("ascii", errors="ignore")}
 
 Stderr:
 
-{stderr.decode("ascii")}""",
+{stderr.decode("ascii", errors="ignore")}
+
+Text:
+
+{text}""",
         mimetype="text/plain",
     )
 
@@ -144,6 +152,10 @@ Seed: {seed}
     r.headers["Access-Control-Allow-Methods"] = "GET, OPTIONS, HEAD"
 
     return r
+
+
+if os.path.exists("model.lock"):
+    os.remove("model.lock")
 
 
 def main() -> int:
