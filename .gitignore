@@ -167,5 +167,5 @@ cython_debug/
 !py.typed
 
 *.bin
-
 /bin/
+*.lock
