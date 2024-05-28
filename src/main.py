@@ -56,7 +56,7 @@ def index() -> str:
 
 
 @app.post("/")
-@limit.limit("1 per 3 hours")
+@limit.limit("1 per 1 hour")
 def update():
     while os.path.exists("model.lock"):
         time.sleep(1)
