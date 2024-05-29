@@ -10,6 +10,7 @@ from base64 import urlsafe_b64encode
 from warnings import filterwarnings as filter_warnings
 
 import flask
+import regex
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from werkzeug.middleware.proxy_fix import ProxyFix
@@ -28,7 +29,7 @@ app.config["USE_SESSION_FOR_NEXT"] = True
 
 MIN_LENGTH_MAX: t.Final[int] = 256
 COUNT_MAX: t.Final[int] = 128
-MAX_TEXT: t.Final[int] = 2**14  # 16 KB
+MAX_TEXT: t.Final[int] = 2**12  # 4 KB
 MAX_FILESIZE: t.Final[int] = 2**32  # 4 GB
 
 limit: Limiter = Limiter(
@@ -37,6 +38,11 @@ limit: Limiter = Limiter(
     default_limits=["10000 per day", "1500 per hour", "30 per minute", "6 per second"],
     storage_uri="memcached://127.0.0.1:15391",
 )
+
+
+def filter_string(s: str) -> str:
+    """filter string to be valid"""
+    return "".join(regex.findall(r"[\p{L}\p{N}\p{Emoji}\p{P}\p{Z}]+", s)).strip()
 
 
 @app.context_processor  # type: ignore
@@ -81,7 +87,9 @@ def update():
 
     os.remove("model.lock")
 
-    stdout, stderr = process.communicate(input=text.encode("utf-8", errors="ignore"))
+    stdout, stderr = process.communicate(
+        input=filter_string(text).encode("utf-8", errors="ignore")
+    )
 
     return flask.Response(
         f"""Done. Exit code: {process.wait()}
@@ -141,7 +149,7 @@ def gen(seed: t.Optional[str] = None) -> t.Any:
 Seed: {seed} (/gen/<seed> pattern apples to the URL, which isn't permanent and will redirect to other data with time as the model changes)
 
 ----- BEGIN LIBTRIE GENERATED TEXT -----
-{sp.check_output(("trie-generate", "model.bin", seed, str(m), str(c))).decode("utf-8", errors="replace").strip()}
+{filter_string(sp.check_output(("trie-generate", "model.bin", seed, str(m), str(c))).decode("utf-8", errors="ignore")).strip()}
 ----- END LIBTRIE GENERATED TEXT -----""",
             mimetype="text/plain",
         )

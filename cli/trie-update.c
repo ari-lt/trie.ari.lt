@@ -2,12 +2,12 @@
 
 #include <stdio.h>
 
-#define BUF_SIZE 16384
+#define BUF_SIZE 1024
 
 int main(const int argc, const char *const argv[]) {
     Trie *t;
     FILE *fp;
-    int c;
+    int c, p;
     uint64_t idx;
     uint8_t buf[BUF_SIZE] = {0};
 
@@ -42,15 +42,18 @@ int main(const int argc, const char *const argv[]) {
     puts("Updating the model...");
 
     idx = 0;
+    p   = 0;
 
     while ((c = getchar()) != EOF) {
-        buf[idx++] = c == '\n' || c == '\r' ? ' ' : (uint8_t)c;
+        buf[idx++] = (c == '\n' || c == '\r') && p != '\n' ? ' ' : (uint8_t)c;
 
-        if (idx >= (BUF_SIZE - 2) || c == '.' || c == '?' || c == '!') {
+        if (idx >= BUF_SIZE - 1 || c == '.' || c == '?' || c == '!') {
             buf[idx] = '\0';
             trie_insert_sentence(t, buf);
             idx = 0;
         }
+
+        p = c;
     }
 
     puts("Saving the model...");
