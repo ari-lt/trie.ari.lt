@@ -11,7 +11,7 @@
 
 ```sh
 export CFLAGS='-O3 -s -ffast-math'
-make -j$(nproc)
+make -j$(nproc) strip
 su -c 'make install'
 trie-update model.bin <init.txt
 mv model.bin src/

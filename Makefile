@@ -25,8 +25,11 @@ $(BIN_DIR)/%: $(SRC_DIR)/%.c | $(BIN_DIR)
 
 install: all
 	@echo "Installing binaries to $(BINDIR)"
-	@mkdir -p $(BINDIR)
-	@cp $(TARGETS) $(BINDIR)
+	mkdir -p $(BINDIR)
+	cp $(TARGETS) $(BINDIR)
+
+strip: all
+	strip $(BIN_DIR)/*
 
 clean:
 	rm -rf $(BIN_DIR)
