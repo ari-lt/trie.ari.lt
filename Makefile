@@ -29,7 +29,7 @@ install: all
 	cp $(TARGETS) $(BINDIR)
 
 strip: all
-	strip $(BIN_DIR)/*
+	strip $(STRIPFLAGS) $(BIN_DIR)/*
 
 clean:
 	rm -rf $(BIN_DIR)
