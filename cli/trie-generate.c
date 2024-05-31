@@ -51,7 +51,7 @@ int main(const int argc, const char *const argv[]) {
 
     count = atol(argv[4]);
 
-    if (min_size < 1) {
+    if (count < 1) {
         fputs("Invalid sentence count\n", stderr);
         return 1;
     }
